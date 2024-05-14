@@ -251,11 +251,14 @@ def find_binary_dependencies(binaries, import_packages):
         # first time" every time. See #8396.
         suppressed_imports += ['PySimpleGUI']
 
+        logger.info("import_packages: %r", import_packages)
+        logger.info("suppressed_imports: %r", suppressed_imports)
         # Processing in isolated environment.
         with isolated.Python() as child:
             child.call(setup, suppressed_imports)
             for package in import_packages:
                 try:
+                    logger.info("attempting to import: %r", package)
                     child.call(import_library, package)
                 except isolated.SubprocessDiedError as e:
                     # Re-raise as `isolated.SubprocessDiedError` again, to trigger error-handling codepath in
